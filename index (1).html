@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Lead - Show de Imóveis</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; }
+    label { display: block; margin-top: 15px; }
+    input, select, button {
+      width: 100%; padding: 10px; margin-top: 5px;
+      border-radius: 5px; border: 1px solid #ccc;
+    }
+    button { background-color: #28a745; color: white; border: none; margin-top: 20px; }
+    button:hover { background-color: #218838; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastro de Interesse</h1>
+    <form id="leadForm">
+      <label>Nome completo:</label>
+      <input type="text" name="nome" required>
+
+      <label>Telefone (WhatsApp):</label>
+      <input type="text" name="telefone" required>
+
+      <label>Bairro de interesse:</label>
+      <input type="text" name="bairro">
+
+      <label>Valor de entrada disponível (R$):</label>
+      <input type="text" name="entrada">
+
+      <label>Faixa de valor do imóvel:</label>
+      <select name="faixa_valor">
+        <option value="Até 200 mil">Até 200 mil</option>
+        <option value="200 a 300 mil">200 a 300 mil</option>
+        <option value="Acima de 300 mil">Acima de 300 mil</option>
+      </select>
+
+      <label>Tipo de imóvel:</label>
+      <select name="tipo">
+        <option>Casa</option>
+        <option>Apartamento</option>
+        <option>Tanto faz</option>
+      </select>
+
+      <label>Tem crédito aprovado pela Caixa?</label>
+      <select name="credito">
+        <option>Sim</option>
+        <option>Não</option>
+        <option>Não sei</option>
+      </select>
+
+      <label>Vai usar FGTS?</label>
+      <select name="fgts">
+        <option>Sim</option>
+        <option>Não</option>
+        <option>Não sei</option>
+      </select>
+
+      <label>Participa do Minha Casa Minha Vida?</label>
+      <select name="mcmv">
+        <option>Sim</option>
+        <option>Não</option>
+        <option>Não sei</option>
+      </select>
+
+      <label>Quando pretende comprar?</label>
+      <select name="urgencia">
+        <option>Imediatamente</option>
+        <option>Em até 1 mês</option>
+        <option>Em até 3 meses</option>
+        <option>Somente pesquisando</option>
+      </select>
+
+      <label>Corretor responsável:</label>
+      <select name="corretor">
+        <option value="João">Corretor João</option>
+        <option value="Maria">Corretora Maria</option>
+        <option value="Pedro">Corretor Pedro</option>
+      </select>
+
+      <button type="submit">Enviar</button>
+    </form>
+    <p id="resposta" style="margin-top: 20px; text-align: center;"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('leadForm');
+    const resposta = document.getElementById('resposta');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('https://sistema-leads.onrender.com/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          resposta.textContent = 'Lead enviado com sucesso!';
+          resposta.style.color = 'green';
+          form.reset();
+        } else {
+          resposta.textContent = 'Erro ao enviar lead.';
+          resposta.style.color = 'red';
+        }
+      } catch (err) {
+        resposta.textContent = 'Erro de conexão com o servidor.';
+        resposta.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>
